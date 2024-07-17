@@ -1,4 +1,4 @@
-# Some test project for webassembly
+# Some test projects for webassembly
 
 This folder contains serveral small test programs:
 * A simple webserver in Python
