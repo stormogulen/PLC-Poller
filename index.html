@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC Emulator</title>
+</head>
+
+<body>
+    <h1>PLC Emulator</h1>
+    <div>
+        <h2>PLC Value:</h2>
+        <div id="plc-output"></div>
+    </div>
+    <div>
+        <h2>API Response:</h2>
+        <div id="api-output"></div>
+    </div>
+    <div id="error"></div>
+    <script type="module">
+        import init, { PlcApiComponent } from './plc-api-component/pkg/plc_api_component.js';
+
+
+        window.updateUiPlc = function (value) {
+            console.log(`Updating PLC UI with value: ${value}`);
+            document.getElementById('plc-output').textContent = `Current PLC Value: ${value}`;
+        };
+
+        window.updateUiApi = function (result) {
+            console.log(`Updating API UI with result: ${result}`);
+            const data = JSON.parse(result);
+            document.getElementById('api-output').innerHTML = `
+                <p>Todo ID: ${data.id}</p>
+                <p>Title: ${data.title}</p>
+                <p>Completed: ${data.completed}</p>
+            `;
+        };
+
+        window.handleError = function (error) {
+            console.log("inside handleError")
+            console.error(error);
+            document.getElementById('error').textContent = `Error: ${error}`;
+        };
+
+        async function run() {
+            await init();
+            console.log("WebAssembly module initialized");
+
+            try {
+                const plcApiComponent = new PlcApiComponent();
+                plcApiComponent.start_polling();
+                console.log("The PLC API component should start polling...");
+            } catch (e) {
+                handleError(`Failed to start polling: ${e}`);
+            }
+        }
+
+        run();
+    </script>
+</body>
+
+</html>
